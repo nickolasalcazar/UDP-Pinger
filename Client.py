@@ -1,30 +1,23 @@
 from socket import *
+import time
+import datetime
 
 serverSocket = socket(AF_INET, SOCK_DGRAM)
 
-# Send 10 pings to server
-
-# Send the ping message using UDP
-
-# If server responds,
-#	Print the response message from server
-# 	Print the round trip time (RTT) in seconds
-
-# Else print "Request timed out"
-# Client waits 1 sec for a reply before assuming packet loss
-
-
-
-
-
-# Send message to UDP Pinger Server
 # Define address of other socket
 address = ("127.0.0.1", 12000)
 
-message = "Working 123".encode()
+# Send 10 pings to server
+for i in range(10):
+  message = f"Ping {i+1} {datetime.datetime.now().time()}";
+  serverSocket.sendto(message.encode(), address)
 
-serverSocket.sendto(message, address)
+  serverSocket.settimeout(1);
+  timeSent = datetime.datetime.now();
 
-# Receive response
-response  = serverSocket.recvfrom(1024)
-print(response[0].decode())
+  try:
+    response = serverSocket.recvfrom(1024)
+    roundtrip = (datetime.datetime.now() - timeSent).total_seconds()
+    print(f"{response[0].decode()} | roundtrip: {roundtrip} seconds")
+  except error:
+    print(f"Request {i+1} timed out")
